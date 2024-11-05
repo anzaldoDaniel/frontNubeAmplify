@@ -1,6 +1,8 @@
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { Tarea } from 'src/app/models/tarea';
 import { ApiTareasService } from 'src/app/services/api-tareas.service';
+import { AuthenticateService } from 'src/app/services/cognito.service';
+import { Router } from "@angular/router";
 
 
 @Component({
@@ -15,10 +17,14 @@ export class InicioComponent {
   error: Boolean = false;
   @ViewChild('errorModal') errorModal?: ElementRef;
   
-  constructor(private apiTareasService: ApiTareasService){}
+  constructor(private apiTareasService: ApiTareasService, private authService: AuthenticateService, private router: Router){}
 
   ngOnInit(){
-    this.cargarTareas();
+    if(!this.authService.isAuthenticated()){
+      this.router.navigate(["/login"]);
+    }else{
+      this.cargarTareas();
+    }
   }
 
   cargarTareas(){
